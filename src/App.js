@@ -1,42 +1,100 @@
-import React , { useState, useEffect } from 'react'
-import logo from './logo.svg';
-import './App.css';
-import {BrowserRoute, Routes, Route} from 'react-router-dom'
+import React, { useState, useEffect } from "react";
+import axios from "axios"; // Importa axios
+import "./App.css";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom"; 
+import { User } from "./components/User";
+import "bootstrap/dist/css/bootstrap.min.css";
+import logo from "./logo.svg";
+import { AddUs } from "./components/AddUs";
 
 function App() {
   const [users, setUsers] = useState([]);
+  const [editUserId, setEditUserId] = useState(null);
 
-  // Llamada a la API
   useEffect(() => {
-    fetch('https://jsonplaceholder.typicode.com/users')
-      .then((response) => response.json())
-      .then((data) => setUsers(data))
-      .catch((error) => console.error('Error fetching users:', error));
+    fetchData();
   }, []);
 
+  // Traer lista de usuarios
+  const fetchData = async () => {
+    try {
+      const response = await axios.get("https://jsonplaceholder.typicode.com/users");
+      setUsers(response.data);
+      console.log("Usuarios iniciales:", response.data); // Muestra los usuarios al cargar
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  // Agregar usuario
+  const addUser = async (name, email) => {
+    try {
+      const response = await axios.post('https://jsonplaceholder.typicode.com/users', {
+        name: name,
+        email: email,
+      });
+      setUsers((users) => [...users, response.data]);
+      console.log("Usuario agregado:", response.data); // Muestra el usuario agregado
+      console.log("Estado actual de usuarios:", [...users, response.data]); // Muestra los usuarios actualizados
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  // Editar usuario
+  const editUser = async (id, updatedName, updatedEmail) => {
+    try {
+      const response = await axios.put(`https://jsonplaceholder.typicode.com/users/${id}`, {
+        name: updatedName,
+        email: updatedEmail,
+      });
+      // Simula la actualización localmente
+      setUsers((users) =>
+        users.map((user) =>
+          user.id === id ? { ...user, name: updatedName, email: updatedEmail } : user
+        )
+      );
+      console.log(`Usuario con ID ${id} actualizado:`, response.data ); // Muestra el usuario editado
+      console.log("Estado actual de usuarios:", users); // Muestra los usuarios actualizados
+      setEditUserId(null);
+    } catch (err) {
+      console.error("Error al editar usuario:", err);
+    }
+  };
+
+  // Eliminar usuario
+  const deleteUser = async (id) => {
+    try {
+      await axios.delete(`https://jsonplaceholder.typicode.com/users/${id}`);
+      setUsers((users) => users.filter((user) => user.id !== id));
+      console.log(`Usuario con ID ${id} eliminado.`); // Muestra el ID del usuario eliminado
+      console.log("Estado actual de usuarios:", users.filter((user) => user.id !== id)); // Muestra los usuarios después de la eliminación
+    } catch (err) {
+      console.error("Error al eliminar usuario:", err);
+    }
+  };
+
   return (
-    <div className="container mt-5">
-      <h1 className="text-center">Users List</h1>
-      <div className="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
-        {users.map((user) => (
-          <div className="col" key={user.id}>
-            <div className="card h-100">
-              <div className="card-body">
-                <h5 className="card-title">{user.name}</h5>
-                <p className="card-text">
-                  <strong>Email:</strong> {user.email}
-                </p>
-                <p className="card-text">
-                  <strong>Phone:</strong> {user.phone}
-                </p>
-                <p className="card-text">
-                  <strong>Company:</strong> {user.company.name}
-                </p>
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
+    <div className="App">
+      <header className="App-header">
+        <img src={logo} className="App-logo" alt="logo" />
+        <h2 className="mb-4">User List</h2>
+        <AddUs addUser={addUser} />
+        <ul className="list-group">
+          {users.map((user) => (
+            <User
+              key={user.id}
+              id={user.id}
+              name={user.name}
+              email={user.email}
+              onEdit={editUser}
+              onDelete={deleteUser}
+              setEditUserId={setEditUserId}
+              editUserId={editUserId}
+            />
+          ))}
+        </ul>
+      </header>
     </div>
   );
 }
