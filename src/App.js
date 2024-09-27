@@ -27,19 +27,20 @@ function App() {
   };
 
   // Agregar usuario
-  const addUser = async (name, email) => {
-    try {
-      const response = await axios.post('https://jsonplaceholder.typicode.com/users', {
-        name: name,
-        email: email,
-      });
-      setUsers((users) => [...users, response.data]);
-      console.log("Usuario agregado:", response.data); // Muestra el usuario agregado
-      console.log("Estado actual de usuarios:", [...users, response.data]); // Muestra los usuarios actualizados
-    } catch (err) {
-      console.log(err);
-    }
-  };
+const addUser = async (name, email) => {
+  try {
+    const response = await axios.post('https://jsonplaceholder.typicode.com/users', {
+      name: name,
+      email: email,
+    });
+    // Agrega el nuevo usuario directamente al estado
+    setUsers((prevUsers) => [...prevUsers, response.data]);
+    console.log("Usuario agregado:", response.data);
+  } catch (err) {
+    console.log(err);
+  }
+};
+
 
   // Editar usuario
   const editUser = async (id, updatedName, updatedEmail) => {
@@ -63,16 +64,16 @@ function App() {
   };
 
   // Eliminar usuario
-  const deleteUser = async (id) => {
-    try {
-      await axios.delete(`https://jsonplaceholder.typicode.com/users/${id}`);
-      setUsers((users) => users.filter((user) => user.id !== id));
-      console.log(`Usuario con ID ${id} eliminado.`); // Muestra el ID del usuario eliminado
-      console.log("Estado actual de usuarios:", users.filter((user) => user.id !== id)); // Muestra los usuarios después de la eliminación
-    } catch (err) {
-      console.error("Error al eliminar usuario:", err);
-    }
-  };
+const deleteUser = async (id) => {
+  try {
+    await axios.delete(`https://jsonplaceholder.typicode.com/users/${id}`);
+    setUsers((prevUsers) => prevUsers.filter((user) => user.id !== id));
+    console.log(`Usuario con ID ${id} eliminado.`);
+  } catch (err) {
+    console.error("Error al eliminar usuario:", err);
+  }
+};
+
 
   return (
     <div className="App">
@@ -80,23 +81,36 @@ function App() {
         <img src={logo} className="App-logo" alt="logo" />
         <h2 className="mb-4">User List</h2>
         <AddUs addUser={addUser} />
-        <ul className="list-group">
-          {users.map((user) => (
-            <User
-              key={user.id}
-              id={user.id}
-              name={user.name}
-              email={user.email}
-              onEdit={editUser}
-              onDelete={deleteUser}
-              setEditUserId={setEditUserId}
-              editUserId={editUserId}
-            />
-          ))}
-        </ul>
+        <div className="container">
+          <div className="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
+            {users.map((user) => (
+              <div className="col" key={user.id}>
+                <div className="card h-100">
+                  <div className="card-header">
+                    <h5 className="card-title">{user.name}</h5>
+                    <p className="card-subtitle mb-2 text-muted">{user.email}</p>
+                  </div>
+                  <div className="card-body">
+                    <User
+                      key={user.id}
+                      id={user.id}
+                      name={user.name}
+                      email={user.email}
+                      onEdit={editUser}
+                      onDelete={deleteUser}
+                      setEditUserId={setEditUserId}
+                      editUserId={editUserId}
+                    />
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
       </header>
     </div>
   );
 }
 
 export default App;
+

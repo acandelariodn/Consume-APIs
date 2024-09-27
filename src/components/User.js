@@ -33,18 +33,23 @@ export const User = ({
     <li className="list-group-item d-flex justify-content-between align-items-center">
       {isEditing ? ( // Mostrar inputs y botones de guardado/cancelación
         <div>
-          <input className="me-2"
+          <input
+            className="me-2"
             value={updatedName}
             onChange={(e) => setUpdatedName(e.target.value)}
             placeholder="Name"
           />
-          <input className="me-2"
+          <input
+            className="me-2"
             value={updatedEmail}
             onChange={(e) => setUpdatedEmail(e.target.value)}
             placeholder="Email"
           />
           <span>
-            <button className="btn btn-sm btn-success me-2" onClick={handleSave}>
+            <button
+              className="btn btn-sm btn-success me-2"
+              onClick={handleSave}
+            >
               {/* SVG del ícono check */}
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -63,7 +68,10 @@ export const User = ({
               </svg>
             </button>
 
-            <button className="btn btn-sm btn-danger me-2" onClick={handleCancel}>
+            <button
+              className="btn btn-sm btn-danger me-2"
+              onClick={handleCancel}
+            >
               {/* SVG del ícono de cancelar */}
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -86,9 +94,7 @@ export const User = ({
         </div>
       ) : (
         // Mostrar nombre y email con botones de editar y eliminar
-        <div>
-          <h5>{name}</h5>
-          <p>{email}</p>
+        <div className="text-center">
           <span>
             <button
               className="btn btn-outline-primary me-2"
