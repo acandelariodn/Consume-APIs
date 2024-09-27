@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+//import React, { useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 
 export const AddUs = ({ addUser }) => {
@@ -10,14 +10,14 @@ export const AddUs = ({ addUser }) => {
 
     // Validar que ambos campos estén llenos
     if (!name || !email) {
-      alert("Por favor, complete ambos campos.");
+      alert("Please complete both fields.");
       return;
     }
 
     // Validar que el email tenga un formato correcto
     const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     if (!emailPattern.test(email)) {
-      alert("Por favor, ingrese un correo electrónico válido.");
+      alert("Please enter a valid email address.");
       return;
     }
 
