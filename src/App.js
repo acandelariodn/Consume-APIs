@@ -1,150 +1,25 @@
-import React, { useState, useEffect } from "react";
-import axios from "axios"; // Importa axios
-import "./App.css";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { User } from "./components/User";
-import "bootstrap/dist/css/bootstrap.min.css";
-import logo from "./logo.svg";
-import { AddUs } from "./components/AddUs";
+import React from "react";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import { Login } from "./components/Login";
+import Clients from "./components/Clients";
+// Asumo que tienes un componente para "/clients"
 
 function App() {
-  const [users, setUsers] = useState([]);
-  const [editUserId, setEditUserId] = useState(null);
-
-  useEffect(() => {
-    fetchData();
-  }, []);
-
-  // Traer lista de usuarios
-  const fetchData = async () => {
-    try {
-      const response = await axios.get(
-        "https://jsonplaceholder.typicode.com/users"
-      );
-      setUsers(response.data);
-      console.log("Usuarios iniciales:", response.data); // Muestra los usuarios al cargar
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
-  // Agregar usuario
-  const addUser = async (name, email) => {
-    try {
-      // Encuentra el ID más alto actual
-      const maxId = Math.max(...users.map((user) => user.id), 0);
-
-      // Crea un nuevo usuario con un ID único
-      const newUser = {
-        id: maxId + 1, // Nuevo ID será el más alto + 1
-        name: name,
-        email: email,
-      };
-
-      // Envía el nuevo usuario a la API
-      const response = await axios.post(
-        "https://jsonplaceholder.typicode.com/users",
-        {
-          name: name,
-          email: email,
-        }
-      );
-
-      // Asigna el ID local al usuario antes de actualizar el estado
-      const createdUser = {
-        ...response.data, // Usa los datos devueltos por la API
-        id: newUser.id, // Asigna el ID único que generaste
-      };
-
-      // Actualiza el estado con el nuevo usuario
-      setUsers((prevUsers) => [...prevUsers, createdUser]);
-      console.log("Usuario agregado:", createdUser);
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
-  // Editar usuario
-const editUser = async (id, updatedName, updatedEmail) => {
-  try {
-    // Usa PUT o PATCH en lugar de POST
-    const response = await axios.put(`https://jsonplaceholder.typicode.com/users/${id}`, {
-      name: updatedName,
-      email: updatedEmail,
-    });
-
-    // Simula la actualización localmente (ignora la respuesta de la API)
-    setUsers((users) =>
-      users.map((user) =>
-        user.id === id ? { ...user, name: updatedName, email: updatedEmail } : user
-      )
-    );
-
-    console.log(`Usuario con ID ${id} actualizado:`, response.data); // Muestra el usuario editado
-    setEditUserId(null);
-  } catch (err) {
-    // Si ocurre un error (por ejemplo, 404), maneja la actualización localmente
-    console.error("Error al editar usuario:", err);
-
-    // Actualiza el estado localmente de todos modos, para simular la edición
-    setUsers((users) =>
-      users.map((user) =>
-        user.id === id ? { ...user, name: updatedName, email: updatedEmail } : user
-      )
-    );
-    setEditUserId(null);
-  }
-};
-
-
-  // Eliminar usuario
-  const deleteUser = async (id) => {
-    try {
-      await axios.delete(`https://jsonplaceholder.typicode.com/users/${id}`);
-      setUsers((prevUsers) => prevUsers.filter((user) => user.id !== id));
-      console.log(`Usuario con ID ${id} eliminado.`);
-    } catch (err) {
-      console.error("Error al eliminar usuario:", err);
-    }
-  };
-
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <h2 className="mb-4">User List</h2>
-        <AddUs addUser={addUser} />
-        <div className="container">
-          <div className="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
-            {users.map((user) => (
-              <div className="col" key={user.id}>
-                <div className="card h-100">
-                  <div className="card-header">
-                    <h5 className="card-title">{user.name}</h5>
-                    <p className="card-subtitle mb-2 text-muted">
-                      {user.email}
-                    </p>
-                  </div>
-                  <div className="card-body">
-                    <User
-                      key={user.id}
-                      id={user.id}
-                      name={user.name}
-                      email={user.email}
-                      onEdit={editUser}
-                      onDelete={deleteUser}
-                      setEditUserId={setEditUserId}
-                      editUserId={editUserId}
-                    />
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </header>
-    </div>
+    <Router>
+      <Routes>
+        {/* Ruta para /login */}
+        <Route path="/login" element={<Login/>} />
+
+        {/* Ruta para /clients */}
+        <Route path="/clients" element={<Clients/>} />
+
+        {/* Redireccionar cualquier ruta desconocida a /login (ruta por defecto) */}
+        <Route path="*" element={<Navigate to="/login" replace />} />
+      </Routes>
+    </Router>
   );
 }
 
 export default App;
+

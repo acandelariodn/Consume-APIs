@@ -12,7 +12,7 @@ export const AddUs = ({ addUser }) => {
   return (
     <div>
       <form onSubmit={handleOnSummit}>
-        <h3>Add User</h3>
+        <h3>Add Client</h3>
         <input placeholder="Name" name="name" /> {/* Corregido: name="name" */}
         <input placeholder="Email" name="email" />{" "}
         {/* Corregido: name="email" */}
