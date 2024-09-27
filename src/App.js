@@ -29,29 +29,40 @@ function App() {
   };
 
   // Agregar usuario
-const addUser = async (name, email) => {
-  try {
-    // Encuentra el ID más alto actual
-    const maxId = Math.max(...users.map(user => user.id), 0);
-    
-    // Crea un nuevo usuario con un ID único
-    const newUser = {
-      id: maxId + 1, // Nuevo ID será el más alto + 1
-      name: name,
-      email: email,
-    };
+  const addUser = async (name, email) => {
+    try {
+      // Encuentra el ID más alto actual
+      const maxId = Math.max(...users.map((user) => user.id), 0);
 
-    // Simula el envío a la API con axios
-    const response = await axios.post('https://jsonplaceholder.typicode.com/users', newUser);
-    
-    // Actualiza el estado con el nuevo usuario
-    setUsers((prevUsers) => [...prevUsers, response.data]);
-    console.log("Usuario agregado:", response.data);
-  } catch (err) {
-    console.log(err);
-  }
-};
+      // Crea un nuevo usuario con un ID único
+      const newUser = {
+        id: maxId + 1, // Nuevo ID será el más alto + 1
+        name: name,
+        email: email,
+      };
 
+      // Envía el nuevo usuario a la API
+      const response = await axios.post(
+        "https://jsonplaceholder.typicode.com/users",
+        {
+          name: name,
+          email: email,
+        }
+      );
+
+      // Asigna el ID local al usuario antes de actualizar el estado
+      const createdUser = {
+        ...response.data, // Usa los datos devueltos por la API
+        id: newUser.id, // Asigna el ID único que generaste
+      };
+
+      // Actualiza el estado con el nuevo usuario
+      setUsers((prevUsers) => [...prevUsers, createdUser]);
+      console.log("Usuario agregado:", createdUser);
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   // Editar usuario
   const editUser = async (id, updatedName, updatedEmail) => {
