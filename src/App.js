@@ -29,26 +29,29 @@ function App() {
   };
 
   // Agregar usuario
-  const addUser = async (name, email) => {
-    try {
-      // Encuentra el ID más alto actual
-      const maxId = Math.max(...users.map((user) => user.id), 0);
-      const newUser = {
-        id: maxId + 1, // Nuevo ID será el más alto + 1
-        name: name,
-        email: email,
-      };
+const addUser = async (name, email) => {
+  try {
+    // Encuentra el ID más alto actual
+    const maxId = Math.max(...users.map(user => user.id), 0);
+    
+    // Crea un nuevo usuario con un ID único
+    const newUser = {
+      id: maxId + 1, // Nuevo ID será el más alto + 1
+      name: name,
+      email: email,
+    };
 
-      // Simulación de la respuesta de la API
-      const response = { data: newUser };
+    // Simula el envío a la API con axios
+    const response = await axios.post('https://jsonplaceholder.typicode.com/users', newUser);
+    
+    // Actualiza el estado con el nuevo usuario
+    setUsers((prevUsers) => [...prevUsers, response.data]);
+    console.log("Usuario agregado:", response.data);
+  } catch (err) {
+    console.log(err);
+  }
+};
 
-      // Agrega el nuevo usuario al estado
-      setUsers((prevUsers) => [...prevUsers, response.data]);
-      console.log("Usuario agregado:", response.data);
-    } catch (err) {
-      console.log(err);
-    }
-  };
 
   // Editar usuario
   const editUser = async (id, updatedName, updatedEmail) => {
