@@ -1,7 +1,8 @@
 import React from 'react'
 import { User } from './User';
 import { AddUs } from './AddUs';
-//import logo from "../logo.svg";
+import '../App.css';
+import logo from "../logo.svg";
 import axios from "axios";
 import { useState, useEffect } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -85,6 +86,7 @@ function Clients () {
     return (
       <div className="App">
         <header className="App-header">
+        <img src={logo} className="App-logo" alt="logo" />
           <h2 className="mb-4">Client Contacts</h2>
           <AddUs addUser={addUser} />
           <div className="container">
