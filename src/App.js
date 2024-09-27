@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios"; // Importa axios
 import "./App.css";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom"; 
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { User } from "./components/User";
 import "bootstrap/dist/css/bootstrap.min.css";
 import logo from "./logo.svg";
@@ -18,7 +18,9 @@ function App() {
   // Traer lista de usuarios
   const fetchData = async () => {
     try {
-      const response = await axios.get("https://jsonplaceholder.typicode.com/users");
+      const response = await axios.get(
+        "https://jsonplaceholder.typicode.com/users"
+      );
       setUsers(response.data);
       console.log("Usuarios iniciales:", response.data); // Muestra los usuarios al cargar
     } catch (err) {
@@ -27,35 +29,46 @@ function App() {
   };
 
   // Agregar usuario
-const addUser = async (name, email) => {
-  try {
-    const response = await axios.post('https://jsonplaceholder.typicode.com/users', {
-      name: name,
-      email: email,
-    });
-    // Agrega el nuevo usuario directamente al estado
-    setUsers((prevUsers) => [...prevUsers, response.data]);
-    console.log("Usuario agregado:", response.data);
-  } catch (err) {
-    console.log(err);
-  }
-};
+  const addUser = async (name, email) => {
+    try {
+      // Encuentra el ID más alto actual
+      const maxId = Math.max(...users.map((user) => user.id), 0);
+      const newUser = {
+        id: maxId + 1, // Nuevo ID será el más alto + 1
+        name: name,
+        email: email,
+      };
 
+      // Simulación de la respuesta de la API
+      const response = { data: newUser };
+
+      // Agrega el nuevo usuario al estado
+      setUsers((prevUsers) => [...prevUsers, response.data]);
+      console.log("Usuario agregado:", response.data);
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   // Editar usuario
   const editUser = async (id, updatedName, updatedEmail) => {
     try {
-      const response = await axios.put(`https://jsonplaceholder.typicode.com/users/${id}`, {
-        name: updatedName,
-        email: updatedEmail,
-      });
+      const response = await axios.put(
+        `https://jsonplaceholder.typicode.com/users/${id}`,
+        {
+          name: updatedName,
+          email: updatedEmail,
+        }
+      );
       // Simula la actualización localmente
       setUsers((users) =>
         users.map((user) =>
-          user.id === id ? { ...user, name: updatedName, email: updatedEmail } : user
+          user.id === id
+            ? { ...user, name: updatedName, email: updatedEmail }
+            : user
         )
       );
-      console.log(`Usuario con ID ${id} actualizado:`, response.data ); // Muestra el usuario editado
+      console.log(`Usuario con ID ${id} actualizado:`, response.data); // Muestra el usuario editado
       console.log("Estado actual de usuarios:", users); // Muestra los usuarios actualizados
       setEditUserId(null);
     } catch (err) {
@@ -64,16 +77,15 @@ const addUser = async (name, email) => {
   };
 
   // Eliminar usuario
-const deleteUser = async (id) => {
-  try {
-    await axios.delete(`https://jsonplaceholder.typicode.com/users/${id}`);
-    setUsers((prevUsers) => prevUsers.filter((user) => user.id !== id));
-    console.log(`Usuario con ID ${id} eliminado.`);
-  } catch (err) {
-    console.error("Error al eliminar usuario:", err);
-  }
-};
-
+  const deleteUser = async (id) => {
+    try {
+      await axios.delete(`https://jsonplaceholder.typicode.com/users/${id}`);
+      setUsers((prevUsers) => prevUsers.filter((user) => user.id !== id));
+      console.log(`Usuario con ID ${id} eliminado.`);
+    } catch (err) {
+      console.error("Error al eliminar usuario:", err);
+    }
+  };
 
   return (
     <div className="App">
@@ -88,7 +100,9 @@ const deleteUser = async (id) => {
                 <div className="card h-100">
                   <div className="card-header">
                     <h5 className="card-title">{user.name}</h5>
-                    <p className="card-subtitle mb-2 text-muted">{user.email}</p>
+                    <p className="card-subtitle mb-2 text-muted">
+                      {user.email}
+                    </p>
                   </div>
                   <div className="card-body">
                     <User
@@ -113,4 +127,3 @@ const deleteUser = async (id) => {
 }
 
 export default App;
-
