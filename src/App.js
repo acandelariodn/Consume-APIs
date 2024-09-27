@@ -65,30 +65,37 @@ function App() {
   };
 
   // Editar usuario
-  const editUser = async (id, updatedName, updatedEmail) => {
-    try {
-      const response = await axios.put(
-        `https://jsonplaceholder.typicode.com/users/${id}`,
-        {
-          name: updatedName,
-          email: updatedEmail,
-        }
-      );
-      // Simula la actualización localmente
-      setUsers((users) =>
-        users.map((user) =>
-          user.id === id
-            ? { ...user, name: updatedName, email: updatedEmail }
-            : user
-        )
-      );
-      console.log(`Usuario con ID ${id} actualizado:`, response.data); // Muestra el usuario editado
-      console.log("Estado actual de usuarios:", users); // Muestra los usuarios actualizados
-      setEditUserId(null);
-    } catch (err) {
-      console.error("Error al editar usuario:", err);
-    }
-  };
+const editUser = async (id, updatedName, updatedEmail) => {
+  try {
+    // Usa PUT o PATCH en lugar de POST
+    const response = await axios.put(`https://jsonplaceholder.typicode.com/users/${id}`, {
+      name: updatedName,
+      email: updatedEmail,
+    });
+
+    // Simula la actualización localmente (ignora la respuesta de la API)
+    setUsers((users) =>
+      users.map((user) =>
+        user.id === id ? { ...user, name: updatedName, email: updatedEmail } : user
+      )
+    );
+
+    console.log(`Usuario con ID ${id} actualizado:`, response.data); // Muestra el usuario editado
+    setEditUserId(null);
+  } catch (err) {
+    // Si ocurre un error (por ejemplo, 404), maneja la actualización localmente
+    console.error("Error al editar usuario:", err);
+
+    // Actualiza el estado localmente de todos modos, para simular la edición
+    setUsers((users) =>
+      users.map((user) =>
+        user.id === id ? { ...user, name: updatedName, email: updatedEmail } : user
+      )
+    );
+    setEditUserId(null);
+  }
+};
+
 
   // Eliminar usuario
   const deleteUser = async (id) => {
