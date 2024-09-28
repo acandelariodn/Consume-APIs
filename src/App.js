@@ -2,7 +2,6 @@ import React from "react";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import { Login } from "./components/Login";
 import Clients from "./components/Clients";
-// Asumo que tienes un componente para "/clients"
 
 function App() {
   return (
